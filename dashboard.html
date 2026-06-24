@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard — Barbearia Dom Carlo</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --gold: #c8a84b;
+      --gold-light: #e0c06a;
+      --dark: #111111;
+      --dark2: #1a1a1a;
+      --dark3: #222222;
+      --dark4: #2c2c2c;
+      --text: #f0ece4;
+      --muted: #9a9080;
+      --border: #333;
+      --green: #2ecc71;
+      --red: #e05555;
+      --blue: #5b8dee;
+    }
+
+    body {
+      background: var(--dark);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+    }
+
+    /* ── LOGIN ── */
+    #login-screen {
+      min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      background:
+        linear-gradient(135deg, rgba(17,17,17,0.97) 0%, rgba(26,26,26,0.98) 100%),
+        url('https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=1200&q=60') center/cover no-repeat;
+      padding: 24px;
+    }
+
+    .login-box {
+      background: var(--dark3);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 48px 40px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 24px 80px rgba(0,0,0,0.6);
+    }
+
+    .login-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem;
+      color: var(--gold);
+      text-align: center;
+      margin-bottom: 6px;
+    }
+
+    .login-subtitle {
+      font-size: 0.78rem;
+      color: var(--muted);
+      text-align: center;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 36px;
+    }
+
+    .login-box h2 {
+      font-size: 1.4rem;
+      margin-bottom: 28px;
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+    }
+
+    .lg { margin-bottom: 18px; }
+
+    .lg label {
+      display: block;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .lg input {
+      width: 100%;
+      background: var(--dark4);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.95rem;
+      padding: 12px 14px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .lg input:focus { border-color: var(--gold); }
+
+    .login-btn {
+      width: 100%;
+      background: var(--gold);
+      color: var(--dark);
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      font-size: 0.88rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 14px;
+      border: none; border-radius: 3px; cursor: pointer;
+      transition: background 0.2s;
+      margin-top: 8px;
+    }
+
+    .login-btn:hover { background: var(--gold-light); }
+
+    .login-error {
+      background: rgba(224,85,85,0.12);
+      border: 1px solid rgba(224,85,85,0.4);
+      border-radius: 3px;
+      color: #e05555;
+      font-size: 0.82rem;
+      padding: 10px 14px;
+      margin-top: 14px;
+      display: none;
+      text-align: center;
+    }
+
+    .login-error.show { display: block; }
+
+    /* ── DASHBOARD ── */
+    #dashboard { display: none; }
+
+    /* Sidebar */
+    .sidebar {
+      position: fixed; top: 0; left: 0; bottom: 0;
+      width: 230px;
+      background: var(--dark2);
+      border-right: 1px solid var(--border);
+      display: flex; flex-direction: column;
+      z-index: 100;
+      padding: 0 0 24px;
+    }
+
+    .sidebar-logo {
+      padding: 24px 20px;
+      border-bottom: 1px solid var(--border);
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem;
+      color: var(--gold);
+    }
+
+    .sidebar-logo span {
+      display: block;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.7rem;
+      color: var(--muted);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-top: 2px;
+    }
+
+    .sidebar-nav { flex: 1; padding: 16px 0; }
+
+    .nav-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 12px 20px;
+      font-size: 0.88rem;
+      color: var(--muted);
+      cursor: pointer;
+      border-left: 2px solid transparent;
+      transition: all 0.2s;
+    }
+
+    .nav-item:hover { color: var(--text); background: rgba(255,255,255,0.03); }
+
+    .nav-item.active {
+      color: var(--gold);
+      border-left-color: var(--gold);
+      background: rgba(200,168,75,0.06);
+    }
+
+    .nav-item svg { flex-shrink: 0; opacity: 0.7; }
+
+    .nav-item.active svg { opacity: 1; }
+
+    .sidebar-user {
+      padding: 16px 20px;
+      border-top: 1px solid var(--border);
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .sidebar-user strong { display: block; color: var(--text); margin-bottom: 2px; }
+
+    .logout-btn {
+      background: none; border: none; color: var(--muted);
+      font-size: 0.75rem; cursor: pointer; padding: 0;
+      margin-top: 6px; text-decoration: underline;
+      transition: color 0.2s;
+    }
+
+    .logout-btn:hover { color: var(--red); }
+
+    /* Main content */
+    .main {
+      margin-left: 230px;
+      min-height: 100vh;
+    }
+
+    .topbar {
+      background: var(--dark2);
+      border-bottom: 1px solid var(--border);
+      padding: 0 32px;
+      height: 64px;
+      display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; z-index: 90;
+    }
+
+    .topbar h1 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .topbar-right {
+      display: flex; align-items: center; gap: 16px;
+    }
+
+    .back-link {
+      font-size: 0.78rem;
+      color: var(--muted);
+      text-decoration: none;
+      display: flex; align-items: center; gap: 6px;
+      transition: color 0.2s;
+    }
+
+    .back-link:hover { color: var(--gold); }
+
+    .page-content { padding: 32px; }
+
+    /* Stats */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .stat-card {
+      background: var(--dark3);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 24px;
+    }
+
+    .stat-label {
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+
+    .stat-value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--gold);
+      line-height: 1;
+    }
+
+    .stat-sub {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-top: 6px;
+    }
+
+    /* Filters */
+    .filters {
+      display: flex; gap: 12px; flex-wrap: wrap;
+      margin-bottom: 20px; align-items: center;
+    }
+
+    .filter-input {
+      background: var(--dark3);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.85rem;
+      padding: 9px 14px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .filter-input:focus { border-color: var(--gold); }
+
+    .filter-input::placeholder { color: var(--muted); }
+
+    .filter-select {
+      background: var(--dark3);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.85rem;
+      padding: 9px 14px;
+      outline: none;
+      cursor: pointer;
+      appearance: none;
+      min-width: 150px;
+    }
+
+    .filter-select option { background: var(--dark3); }
+
+    .clear-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 0.78rem;
+      padding: 9px 16px;
+      border-radius: 3px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .clear-btn:hover { border-color: var(--red); color: var(--red); }
+
+    .results-count {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-left: auto;
+    }
+
+    /* Table */
+    .table-wrap {
+      background: var(--dark3);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .orders-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+    }
+
+    .orders-table th {
+      background: var(--dark4);
+      padding: 12px 16px;
+      text-align: left;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+
+    .orders-table td {
+      padding: 14px 16px;
+      border-bottom: 1px solid rgba(51,51,51,0.6);
+      vertical-align: middle;
+    }
+
+    .orders-table tr:last-child td { border-bottom: none; }
+
+    .orders-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+    .order-name { font-weight: 600; }
+
+    .order-wpp {
+      color: var(--muted);
+      font-size: 0.8rem;
+    }
+
+    .order-wpp a {
+      color: var(--green);
+      text-decoration: none;
+      font-size: 0.75rem;
+      margin-left: 6px;
+    }
+
+    .order-wpp a:hover { text-decoration: underline; }
+
+    .services-list { font-size: 0.78rem; color: var(--muted); }
+
+    .order-total { font-weight: 700; color: var(--gold); }
+
+    .badge {
+      display: inline-flex; align-items: center;
+      padding: 3px 10px; border-radius: 20px;
+      font-size: 0.7rem; font-weight: 600; letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .badge-pendente { background: rgba(255,193,7,0.15); color: #ffc107; }
+    .badge-confirmado { background: rgba(46,204,113,0.15); color: var(--green); }
+    .badge-concluido { background: rgba(91,141,238,0.15); color: var(--blue); }
+    .badge-cancelado { background: rgba(224,85,85,0.15); color: var(--red); }
+
+    .action-btn {
+      background: none; border: none;
+      font-size: 0.75rem; cursor: pointer;
+      padding: 4px 8px; border-radius: 2px;
+      transition: all 0.2s;
+    }
+
+    .action-confirm { color: var(--green); border: 1px solid rgba(46,204,113,0.3); }
+    .action-confirm:hover { background: rgba(46,204,113,0.1); }
+
+    .action-done { color: var(--blue); border: 1px solid rgba(91,141,238,0.3); }
+    .action-done:hover { background: rgba(91,141,238,0.1); }
+
+    .action-cancel { color: var(--red); border: 1px solid rgba(224,85,85,0.3); }
+    .action-cancel:hover { background: rgba(224,85,85,0.1); }
+
+    .action-delete { color: var(--muted); border: 1px solid var(--border); }
+    .action-delete:hover { color: var(--red); border-color: var(--red); }
+
+    .actions-cell { display: flex; gap: 4px; flex-wrap: wrap; }
+
+    .empty-state {
+      text-align: center;
+      padding: 64px 24px;
+      color: var(--muted);
+    }
+
+    .empty-state svg { opacity: 0.3; margin-bottom: 16px; }
+
+    .empty-state p { font-size: 0.92rem; }
+
+    /* Detail panel */
+    .detail-overlay {
+      position: fixed; inset: 0; z-index: 500;
+      background: rgba(0,0,0,0.7);
+      display: flex; align-items: center; justify-content: flex-end;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.25s;
+    }
+
+    .detail-overlay.open { opacity: 1; pointer-events: all; }
+
+    .detail-panel {
+      background: var(--dark3);
+      border-left: 1px solid var(--border);
+      width: 100%;
+      max-width: 420px;
+      height: 100vh;
+      overflow-y: auto;
+      transform: translateX(100%);
+      transition: transform 0.28s cubic-bezier(.4,0,.2,1);
+      padding: 0;
+    }
+
+    .detail-overlay.open .detail-panel { transform: translateX(0); }
+
+    .detail-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border);
+      position: sticky; top: 0;
+      background: var(--dark3);
+      z-index: 10;
+    }
+
+    .detail-header h3 { font-size: 1.1rem; }
+
+    .panel-close {
+      background: none; border: none; color: var(--muted);
+      font-size: 1.4rem; cursor: pointer; line-height: 1;
+      transition: color 0.2s;
+    }
+
+    .panel-close:hover { color: var(--text); }
+
+    .detail-body { padding: 24px; }
+
+    .detail-row {
+      margin-bottom: 20px;
+    }
+
+    .detail-row label {
+      display: block;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 5px;
+    }
+
+    .detail-row p {
+      font-size: 0.9rem;
+      color: var(--text);
+    }
+
+    .detail-services {
+      background: var(--dark4);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .ds-item {
+      display: flex; justify-content: space-between;
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.85rem;
+    }
+
+    .ds-item:last-child { border-bottom: none; }
+
+    .ds-total {
+      display: flex; justify-content: space-between;
+      padding: 12px 14px;
+      background: rgba(200,168,75,0.08);
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+
+    .ds-total span:last-child { color: var(--gold); }
+
+    .detail-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 24px; }
+
+    .detail-actions .action-btn { flex: 1; text-align: center; padding: 10px 8px; }
+
+    .wpp-full-btn {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      width: 100%;
+      background: #25d366; color: #fff;
+      border: none; border-radius: 3px;
+      font-family: 'Inter', sans-serif;
+      font-weight: 700; font-size: 0.82rem;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      padding: 12px;
+      cursor: pointer; margin-top: 8px;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+
+    .wpp-full-btn:hover { background: #1ebe59; }
+
+    /* Toast */
+    .toast {
+      position: fixed; bottom: 24px; right: 24px; z-index: 9999;
+      background: var(--dark3);
+      border: 1px solid var(--gold);
+      border-radius: 4px;
+      padding: 14px 20px;
+      font-size: 0.85rem;
+      max-width: 300px;
+      transform: translateY(80px);
+      opacity: 0;
+      transition: all 0.3s;
+      pointer-events: none;
+    }
+
+    .toast.show { transform: translateY(0); opacity: 1; }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .sidebar { display: none; }
+      .main { margin-left: 0; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══ LOGIN SCREEN ══ -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-logo">Barbearia Dom Carlo</div>
+    <div class="login-subtitle">Painel Administrativo</div>
+    <h2>Acesso Restrito</h2>
+    <form id="loginForm" onsubmit="doLogin(event)">
+      <div class="lg">
+        <label>Usuario</label>
+        <input type="text" id="lu" placeholder="seu usuario" autocomplete="username" />
+      </div>
+      <div class="lg">
+        <label>Senha</label>
+        <input type="password" id="lp" placeholder="••••••••" autocomplete="current-password" />
+      </div>
+      <button type="submit" class="login-btn">Entrar</button>
+      <div class="login-error" id="loginError">Usuario ou senha incorretos.</div>
+    </form>
+  </div>
+</div>
+
+<!-- ══ DASHBOARD ══ -->
+<div id="dashboard">
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      Dom Carlo
+      <span>Painel Admin</span>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-item active">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+        Pedidos
+      </div>
+      <div class="nav-item" onclick="window.open('index.html','_blank')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        Ver Site
+      </div>
+    </nav>
+    <div class="sidebar-user">
+      <strong id="sidebar-username">—</strong>
+      Administrador
+      <br/>
+      <button class="logout-btn" onclick="doLogout()">Sair da conta</button>
+    </div>
+  </aside>
+
+  <div class="main">
+    <div class="topbar">
+      <h1>Pedidos Recebidos</h1>
+      <div class="topbar-right">
+        <a href="index.html" class="back-link">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+          Voltar ao site
+        </a>
+      </div>
+    </div>
+
+    <div class="page-content">
+      <!-- Stats -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">Total de Pedidos</div>
+          <div class="stat-value" id="stat-total">0</div>
+          <div class="stat-sub">todos os status</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Pendentes</div>
+          <div class="stat-value" id="stat-pendente" style="color:#ffc107">0</div>
+          <div class="stat-sub">aguardando confirmacao</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Confirmados</div>
+          <div class="stat-value" id="stat-confirmado" style="color:var(--green)">0</div>
+          <div class="stat-sub">agendamentos confirmados</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Receita Total</div>
+          <div class="stat-value" id="stat-receita">R$0</div>
+          <div class="stat-sub">pedidos confirmados + concluidos</div>
+        </div>
+      </div>
+
+      <!-- Filters -->
+      <div class="filters">
+        <input type="text" class="filter-input" id="f-search" placeholder="Buscar por nome ou WhatsApp..." oninput="applyFilters()" style="min-width:220px" />
+        <select class="filter-select" id="f-status" onchange="applyFilters()">
+          <option value="">Todos os status</option>
+          <option value="pendente">Pendente</option>
+          <option value="confirmado">Confirmado</option>
+          <option value="concluido">Concluido</option>
+          <option value="cancelado">Cancelado</option>
+        </select>
+        <select class="filter-select" id="f-barbeiro" onchange="applyFilters()">
+          <option value="">Todos os barbeiros</option>
+          <option>Dom Carlo</option>
+          <option>Roberto Silva</option>
+          <option>Marcus Oliveira</option>
+          <option>Qualquer disponivel</option>
+        </select>
+        <button class="clear-btn" onclick="clearFilters()">Limpar filtros</button>
+        <span class="results-count" id="results-count"></span>
+        <button class="clear-btn" onclick="exportCSV()" style="margin-left:auto;border-color:var(--gold);color:var(--gold)">Exportar CSV</button>
+      </div>
+
+      <!-- Table -->
+      <div class="table-wrap">
+        <table class="orders-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Cliente</th>
+              <th>Data do Pedido</th>
+              <th>Agendamento</th>
+              <th>Barbeiro</th>
+              <th>Servicos</th>
+              <th>Total</th>
+              <th>Status</th>
+              <th>Acoes</th>
+            </tr>
+          </thead>
+          <tbody id="orders-tbody"></tbody>
+        </table>
+        <div id="empty-state" class="empty-state" style="display:none">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+          <p>Nenhum pedido encontrado.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ DETAIL PANEL ══ -->
+<div class="detail-overlay" id="detailOverlay" onclick="closeDetail(event)">
+  <div class="detail-panel" id="detailPanel">
+    <div class="detail-header">
+      <h3>Detalhes do Pedido</h3>
+      <button class="panel-close" onclick="closeDetailPanel()">✕</button>
+    </div>
+    <div class="detail-body" id="detailBody"></div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+  // ── CREDENTIALS ──
+  // Adicione ou edite usuarios aqui
+  const USERS = {
+    'domcarlo':  { senha: 'barbearia2024', nome: 'Dom Carlo (Dono)' },
+    'dev':       { senha: 'devadmin123',   nome: 'Desenvolvedor'    }
+  };
+
+  let currentUser = null;
+  let allOrders   = [];
+  let filtered    = [];
+
+  // ── LOGIN ──
+  function doLogin(e) {
+    e.preventDefault();
+    const u = document.getElementById('lu').value.trim().toLowerCase();
+    const p = document.getElementById('lp').value;
+    const err = document.getElementById('loginError');
+
+    if (USERS[u] && USERS[u].senha === p) {
+      currentUser = { username: u, nome: USERS[u].nome };
+      sessionStorage.setItem('dash_user', JSON.stringify(currentUser));
+      showDashboard();
+    } else {
+      err.classList.add('show');
+      document.getElementById('lp').value = '';
+    }
+  }
+
+  function doLogout() {
+    sessionStorage.removeItem('dash_user');
+    currentUser = null;
+    document.getElementById('dashboard').style.display = 'none';
+    document.getElementById('login-screen').style.display = 'flex';
+    document.getElementById('lu').value = '';
+    document.getElementById('lp').value = '';
+  }
+
+  function showDashboard() {
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('dashboard').style.display = 'block';
+    document.getElementById('sidebar-username').textContent = currentUser.nome;
+    loadOrders();
+  }
+
+  // Auto-login if session exists
+  window.addEventListener('DOMContentLoaded', () => {
+    const saved = sessionStorage.getItem('dash_user');
+    if (saved) {
+      try {
+        currentUser = JSON.parse(saved);
+        showDashboard();
+      } catch { sessionStorage.removeItem('dash_user'); }
+    }
+  });
+
+  // ── LOAD ORDERS ──
+  function loadOrders() {
+    allOrders = JSON.parse(localStorage.getItem('barbearia_pedidos') || '[]');
+    applyFilters();
+    updateStats();
+  }
+
+  function updateStats() {
+    document.getElementById('stat-total').textContent = allOrders.length;
+    document.getElementById('stat-pendente').textContent =
+      allOrders.filter(o => o.status === 'pendente').length;
+    document.getElementById('stat-confirmado').textContent =
+      allOrders.filter(o => o.status === 'confirmado').length;
+    const receita = allOrders
+      .filter(o => o.status === 'confirmado' || o.status === 'concluido')
+      .reduce((a, o) => a + (o.total || 0), 0);
+    document.getElementById('stat-receita').textContent = 'R$ ' + receita;
+  }
+
+  // ── FILTERS ──
+  function applyFilters() {
+    const search   = document.getElementById('f-search').value.toLowerCase();
+    const status   = document.getElementById('f-status').value;
+    const barbeiro = document.getElementById('f-barbeiro').value;
+
+    filtered = allOrders.filter(o => {
+      const matchSearch = !search ||
+        o.nome.toLowerCase().includes(search) ||
+        o.whatsapp.includes(search);
+      const matchStatus   = !status   || o.status === status;
+      const matchBarbeiro = !barbeiro || o.barbeiro === barbeiro;
+      return matchSearch && matchStatus && matchBarbeiro;
+    });
+
+    document.getElementById('results-count').textContent =
+      filtered.length + ' pedido' + (filtered.length !== 1 ? 's' : '');
+
+    renderTable();
+  }
+
+  function clearFilters() {
+    document.getElementById('f-search').value = '';
+    document.getElementById('f-status').value = '';
+    document.getElementById('f-barbeiro').value = '';
+    applyFilters();
+  }
+
+  // ── RENDER TABLE ──
+  function renderTable() {
+    const tbody = document.getElementById('orders-tbody');
+    const empty = document.getElementById('empty-state');
+
+    if (filtered.length === 0) {
+      tbody.innerHTML = '';
+      empty.style.display = 'block';
+      return;
+    }
+
+    empty.style.display = 'none';
+
+    tbody.innerHTML = filtered.map((o, i) => {
+      const servicos = o.servicos
+        ? o.servicos.map(s => s.nome).join(', ')
+        : '—';
+
+      const wppNum = o.whatsapp.replace(/\D/g, '');
+      const dataFmt = o.data_agendamento
+        ? new Date(o.data_agendamento + 'T12:00:00').toLocaleDateString('pt-BR')
+        : '—';
+
+      return `
+        <tr>
+          <td style="color:var(--muted);font-size:0.78rem">#${allOrders.indexOf(o) + 1}</td>
+          <td>
+            <div class="order-name">${esc(o.nome)}</div>
+            <div class="order-wpp">
+              ${esc(o.whatsapp)}
+              ${wppNum ? `<a href="https://wa.me/55${wppNum}" target="_blank">WhatsApp</a>` : ''}
+            </div>
+          </td>
+          <td style="font-size:0.8rem;color:var(--muted)">${esc(o.data_criacao || '—')}</td>
+          <td style="font-size:0.85rem">${dataFmt}<br><span style="color:var(--muted);font-size:0.78rem">${esc(o.horario || '—')}</span></td>
+          <td style="font-size:0.82rem">${esc(o.barbeiro || '—')}</td>
+          <td class="services-list">${esc(servicos)}</td>
+          <td class="order-total">R$ ${o.total || 0}</td>
+          <td><span class="badge badge-${o.status}">${o.status}</span></td>
+          <td>
+            <div class="actions-cell">
+              <button class="action-btn action-confirm" onclick="setStatus(${o.id},'confirmado')" title="Confirmar">Confirmar</button>
+              <button class="action-btn action-done" onclick="setStatus(${o.id},'concluido')" title="Concluido">Concluido</button>
+              <button class="action-btn action-cancel" onclick="setStatus(${o.id},'cancelado')" title="Cancelar">Cancelar</button>
+              <button class="action-btn" style="font-size:0.82rem;color:var(--muted)" onclick="openDetail(${o.id})">Ver</button>
+              <button class="action-btn action-delete" onclick="deleteOrder(${o.id})" title="Excluir">✕</button>
+            </div>
+          </td>
+        </tr>
+      `;
+    }).join('');
+  }
+
+  // ── ACTIONS ──
+  function setStatus(id, status) {
+    const idx = allOrders.findIndex(o => o.id === id);
+    if (idx === -1) return;
+    allOrders[idx].status = status;
+    save();
+    applyFilters();
+    updateStats();
+    showToast('Status atualizado para "' + status + '"');
+
+    // Close panel if open
+    if (document.getElementById('detailOverlay').classList.contains('open')) {
+      openDetail(id);
+    }
+  }
+
+  function deleteOrder(id) {
+    if (!confirm('Excluir este pedido permanentemente?')) return;
+    allOrders = allOrders.filter(o => o.id !== id);
+    save();
+    applyFilters();
+    updateStats();
+    showToast('Pedido excluido.');
+  }
+
+  function save() {
+    localStorage.setItem('barbearia_pedidos', JSON.stringify(allOrders));
+  }
+
+  // ── DETAIL PANEL ──
+  function openDetail(id) {
+    const o = allOrders.find(x => x.id === id);
+    if (!o) return;
+
+    const wppNum = o.whatsapp.replace(/\D/g, '');
+    const dataFmt = o.data_agendamento
+      ? new Date(o.data_agendamento + 'T12:00:00').toLocaleDateString('pt-BR')
+      : '—';
+
+    const servicosHtml = o.servicos && o.servicos.length
+      ? o.servicos.map(s => `
+          <div class="ds-item">
+            <span>${esc(s.nome)}</span>
+            <span style="color:var(--muted)">${esc(s.duracao || '')}</span>
+            <span>R$ ${s.preco}</span>
+          </div>`).join('') +
+        `<div class="ds-total"><span>Total</span><span>R$ ${o.total}</span></div>`
+      : '<div class="ds-item" style="color:var(--muted)">Nenhum servico registrado</div>';
+
+    document.getElementById('detailBody').innerHTML = `
+      <div class="detail-row">
+        <label>Status</label>
+        <p><span class="badge badge-${o.status}">${o.status}</span></p>
+      </div>
+      <div class="detail-row">
+        <label>Cliente</label>
+        <p>${esc(o.nome)}</p>
+      </div>
+      <div class="detail-row">
+        <label>WhatsApp</label>
+        <p>${esc(o.whatsapp)}</p>
+      </div>
+      <div class="detail-row">
+        <label>Pedido recebido em</label>
+        <p>${esc(o.data_criacao || '—')}</p>
+      </div>
+      <div class="detail-row">
+        <label>Data do agendamento</label>
+        <p>${dataFmt} as ${esc(o.horario || '—')}</p>
+      </div>
+      <div class="detail-row">
+        <label>Barbeiro</label>
+        <p>${esc(o.barbeiro || '—')}</p>
+      </div>
+      <div class="detail-row">
+        <label>Servicos</label>
+        <div class="detail-services">${servicosHtml}</div>
+      </div>
+      <div class="detail-actions">
+        <button class="action-btn action-confirm" onclick="setStatus(${o.id},'confirmado')">Confirmar</button>
+        <button class="action-btn action-done" onclick="setStatus(${o.id},'concluido')">Concluido</button>
+        <button class="action-btn action-cancel" onclick="setStatus(${o.id},'cancelado')">Cancelar</button>
+      </div>
+      ${wppNum ? `
+      <a href="https://wa.me/55${wppNum}?text=Ola%20${encodeURIComponent(o.nome.split(' ')[0])}!%20Confirmamos%20seu%20agendamento%20para%20${encodeURIComponent(dataFmt)}%20as%20${encodeURIComponent(o.horario)}%20com%20${encodeURIComponent(o.barbeiro)}.%20Te%20esperamos!%20Barbearia%20Dom%20Carlo." target="_blank" class="wpp-full-btn">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+        Enviar confirmacao via WhatsApp
+      </a>` : ''}
+    `;
+
+    document.getElementById('detailOverlay').classList.add('open');
+  }
+
+  function closeDetail(e) {
+    if (e.target === document.getElementById('detailOverlay')) closeDetailPanel();
+  }
+
+  function closeDetailPanel() {
+    document.getElementById('detailOverlay').classList.remove('open');
+  }
+
+  // ── EXPORT CSV ──
+  function exportCSV() {
+    if (filtered.length === 0) { showToast('Nenhum pedido para exportar.'); return; }
+
+    const headers = ['#','Nome','WhatsApp','Pedido em','Data Agendamento','Horario','Barbeiro','Servicos','Total','Status'];
+    const rows = filtered.map((o, i) => [
+      i + 1,
+      '"' + (o.nome || '').replace(/"/g, '""') + '"',
+      o.whatsapp || '',
+      '"' + (o.data_criacao || '') + '"',
+      o.data_agendamento || '',
+      o.horario || '',
+      '"' + (o.barbeiro || '') + '"',
+      '"' + (o.servicos ? o.servicos.map(s => s.nome).join('; ') : '') + '"',
+      o.total || 0,
+      o.status || ''
+    ].join(','));
+
+    const csv = [headers.join(','), ...rows].join('\n');
+    const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href = url; a.download = 'pedidos-barbearia.csv';
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast('CSV exportado com sucesso!');
+  }
+
+  // ── TOAST ──
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3000);
+  }
+
+  // ── HELPER ──
+  function esc(str) {
+    return String(str || '')
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+      .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+</script>
+</body>
+</html>
